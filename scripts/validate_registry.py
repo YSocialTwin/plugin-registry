@@ -27,24 +27,17 @@ OFFICIAL_OWNERS = {"ysocialtwin"}
 RECIPES = {"auto", "requirements", "pip-editable"}
 CATEGORIES = {"agent_extensions", "frontend_extensions", "backend_extensions"}
 TRUST = {"official", "community"}
-# keys and directories used by the plugins that ship inside YSocial
-BUILTIN_IDS = {
-    "agent_memory", "agent_plugins", "forum_client", "forum_server",
-    "frontend_adds_on", "hpc_simulator", "microblogging_client",
-    "microblogging_server", "photo_sharing", "reactive_agents",
-    "scenario_design", "training_modules",
+BUILTIN_FILE = Path(__file__).resolve().parents[1] / "builtin.json"
+BUILTIN_FIELDS = {
+    "key", "label", "group", "group_label", "category", "category_label",
+    "directory", "repo", "branch", "install_commands", "validate_entrypoints",
+    "validate_import", "private", "visible_to_usernames", "seed",
 }  # fmt: skip
-BUILTIN_DIRS = {
-    d.lower() for d in (
-        "ScenarioDesign", "TrainingModules", "YClient", "YClientReddit",
-        "YPhotoSharing", "YServer", "YServerReddit", "YSimulator",
-        "frontend_adds-on", "reactive_agents", "y_agents_plugins",
-        "y_memory_subsystem",
-    )
-}  # fmt: skip
-BUILTIN_REPOS = {
-    f"ysocialtwin/{d}" for d in BUILTIN_DIRS
-}  # same names as the directories
+BUILTIN_REQUIRED = (
+    "key", "label", "group", "group_label", "category", "category_label",
+    "directory", "repo",
+)  # fmt: skip
+PIP_PREFIX = ["python", "-m", "pip", "install"]
 KNOWN_FIELDS = {
     "id", "name", "description", "category", "repo", "branch", "directory",
     "recipe", "trust", "min_ysocial_version", "authors", "import_name", "private",
@@ -58,8 +51,75 @@ MODULE_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)*$")
 VERSION_RE = re.compile(r"^\d+(\.\d+){0,3}$")
 
 
-def validate(payload) -> list[str]:
-    """Return the list of problems (empty = valid)."""
+def load_builtin() -> list[dict]:
+    """The plugins that ship with YSocial (``builtin.json``, the single source of truth)."""
+    return json.loads(BUILTIN_FILE.read_text(encoding="utf-8"))["plugins"]
+
+
+def validate_builtin(payload) -> list[str]:
+    """Rules for ``builtin.json`` (read by YSocial releases, never fetched at run time)."""
+    if not isinstance(payload, dict) or payload.get("schema_version") != SCHEMA_VERSION:
+        return [f"builtin.json: schema_version must be {SCHEMA_VERSION}"]
+    plugins = payload.get("plugins")
+    if not isinstance(plugins, list):
+        return ["builtin.json: 'plugins' must be a list"]
+    errors: list[str] = []
+    keys: set[str] = set()
+    dirs: set[str] = set()
+    repos: set[str] = set()
+    for i, entry in enumerate(plugins):
+        where = f"builtin[{i}] ({entry.get('key') if isinstance(entry, dict) else '?'})"
+        if not isinstance(entry, dict):
+            errors.append(f"{where}: must be an object")
+            continue
+        for extra in sorted(set(entry) - BUILTIN_FIELDS):
+            errors.append(f"{where}: unknown field {extra!r}")
+        for field in BUILTIN_REQUIRED:
+            if not isinstance(entry.get(field), str) or not entry[field].strip():
+                errors.append(f"{where}: {field} is required")
+        if not ID_RE.match(str(entry.get("key", ""))):
+            errors.append(f"{where}: invalid key")
+        if not REPO_RE.match(str(entry.get("repo", ""))):
+            errors.append(f"{where}: repo must look like 'owner/name'")
+        directory = str(entry.get("directory", ""))
+        if not DIR_RE.match(directory) or directory in {".", ".."}:
+            errors.append(f"{where}: invalid directory")
+        if not BRANCH_RE.match(str(entry.get("branch", "main"))):
+            errors.append(f"{where}: invalid branch")
+        for field, seen, value in (
+            ("key", keys, str(entry.get("key", ""))),
+            ("directory", dirs, directory.lower()),
+            ("repo", repos, str(entry.get("repo", "")).lower()),
+        ):
+            if value in seen:
+                errors.append(f"{where}: duplicate {field}")
+            seen.add(value)
+        for command in entry.get("install_commands", []):
+            if not (
+                isinstance(command, list)
+                and command[:4] == PIP_PREFIX
+                and all(isinstance(t, str) for t in command)
+            ):
+                errors.append(f"{where}: install commands must be 'python -m pip install ...'")
+        for rel in entry.get("validate_entrypoints", []):
+            if not isinstance(rel, str) or rel.startswith("/") or ".." in rel.split("/"):
+                errors.append(f"{where}: invalid validate_entrypoints item {rel!r}")
+        name = entry.get("validate_import")
+        if name is not None and not (isinstance(name, str) and MODULE_RE.match(name)):
+            errors.append(f"{where}: invalid validate_import")
+    return errors
+
+
+def validate(payload, builtin: list[dict] | None = None) -> list[str]:
+    """Return the list of problems (empty = valid).
+
+    ``builtin`` defaults to ``builtin.json``: ids, directories and repositories of the
+    plugins that ship with YSocial cannot be reused by a registry entry.
+    """
+    builtin = load_builtin() if builtin is None else builtin
+    builtin_ids = {b["key"] for b in builtin}
+    builtin_dirs = {b["directory"].lower() for b in builtin}
+    builtin_repos = {b["repo"].lower() for b in builtin}
     if not isinstance(payload, dict):
         return ["the file must contain a JSON object"]
     errors: list[str] = []
@@ -72,8 +132,8 @@ def validate(payload) -> list[str]:
         errors.append("at most 500 plugins")
 
     ids: set[str] = set()
-    repos: set[str] = set(BUILTIN_REPOS)
-    dirs: set[str] = set(BUILTIN_DIRS)
+    repos: set[str] = set(builtin_repos)
+    dirs: set[str] = set(builtin_dirs)
     for i, entry in enumerate(plugins):
         where = f"plugins[{i}]"
         if not isinstance(entry, dict):
@@ -85,7 +145,7 @@ def validate(payload) -> list[str]:
             errors.append(f"{where}: unknown field {extra!r}")
         if not isinstance(pid, str) or not ID_RE.match(pid):
             errors.append(f"{where}: id must match {ID_RE.pattern}")
-        elif pid in BUILTIN_IDS or pid in ids:
+        elif pid in builtin_ids or pid in ids:
             errors.append(f"{where}: id already in use")
         else:
             ids.add(pid)
@@ -194,14 +254,24 @@ def main(argv=None) -> int:
     except (OSError, ValueError) as exc:
         print(f"ERROR: cannot read {path}: {exc}")
         return 1
-    errors = validate(payload)
+    try:
+        builtin_payload = json.loads(BUILTIN_FILE.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        print(f"ERROR: cannot read {BUILTIN_FILE.name}: {exc}")
+        return 1
+    errors = validate_builtin(builtin_payload)
+    if not errors:
+        errors = validate(payload, builtin_payload["plugins"])
     if not errors and args.check_repos:
         errors = check_repositories(payload)
     for error in errors:
         print(f"ERROR: {error}")
     if errors:
         return 1
-    print(f"OK: {len(payload['plugins'])} plugin(s) in {path.name}")
+    print(
+        f"OK: {len(payload['plugins'])} plugin(s) in {path.name}, "
+        f"{len(builtin_payload['plugins'])} built-in"
+    )
     return 0
 
 

@@ -28,3 +28,10 @@
 
 Open a pull request. Removing an entry only hides the plugin from the list; plugins already
 installed keep working.
+
+## Built-in plugins (maintainers)
+
+`builtin.json` describes the plugins released together with YSocial. Edit it here (never in YSocial),
+run `python scripts/validate_registry.py`, merge, then in YSocial run
+`python scripts/packaging/sync_builtin_plugins.py --ref <commit>` and release. Install commands in
+this file must be `python -m pip install ...`; validation files are paths relative to the plugin.

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Plugins that ship with YSocial",
+  "type": "object",
+  "required": ["schema_version", "plugins"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "plugins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "label", "group", "group_label", "category", "category_label", "directory", "repo"],
+        "additionalProperties": false,
+        "properties": {
+          "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]{2,47}$" },
+          "label": { "type": "string", "minLength": 1 },
+          "group": { "type": "string", "minLength": 1 },
+          "group_label": { "type": "string", "minLength": 1 },
+          "category": { "type": "string", "minLength": 1 },
+          "category_label": { "type": "string", "minLength": 1 },
+          "directory": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$" },
+          "repo": { "type": "string", "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})/[A-Za-z0-9._-]{1,100}$" },
+          "branch": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,99}$" },
+          "install_commands": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "minItems": 4,
+              "prefixItems": [
+                { "const": "python" }, { "const": "-m" }, { "const": "pip" }, { "const": "install" }
+              ],
+              "items": { "type": "string" }
+            }
+          },
+          "validate_entrypoints": { "type": "array", "items": { "type": "string" } },
+          "validate_import": { "type": "string" },
+          "private": { "type": "boolean" },
+          "visible_to_usernames": { "type": "array", "items": { "type": "string" } },
+          "seed": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

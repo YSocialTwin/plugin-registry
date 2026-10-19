@@ -7,6 +7,18 @@ YSocial or installer release.
 
 Each entry points to a GitHub repository; the registry does not host any code.
 
+## Two files, one source of truth
+
+| File | What it lists | How YSocial uses it |
+| --- | --- | --- |
+| [`builtin.json`](builtin.json) | The plugins that ship with YSocial (simulation runtimes, memory, ...), with everything YSocial needs to install and validate them | Copied into each YSocial release (`scripts/packaging/sync_builtin_plugins.py` in YSocial) and read from the package, **never fetched at run time**. A registry entry can never redefine one of them |
+| [`registry.json`](registry.json) | Every other plugin | Fetched when YSocial starts (cached for offline use) and added to the built-in ones |
+
+This repository is the only place where plugins are described. YSocial keeps a generated copy of
+`builtin.json` (it records the commit it comes from and a hash, and its tests and release job fail if
+it is edited by hand or is behind this repository). To change a built-in plugin: edit `builtin.json`
+here, then run the sync script in YSocial and release.
+
 ## Trust levels
 
 | Level | Meaning | What the user sees |
@@ -35,8 +47,9 @@ to `registry.json`; CI checks the format and that your repository is reachable a
 
 ## Format
 
-[`registry.schema.json`](registry.schema.json) is the JSON Schema; `scripts/validate_registry.py`
-applies the same rules YSocial applies (standard library only):
+[`registry.schema.json`](registry.schema.json) and [`builtin.schema.json`](builtin.schema.json) are the JSON Schemas;
+`scripts/validate_registry.py` applies the same rules YSocial applies (standard library only) to both files, and
+rejects any registry entry whose id, directory or repository is already used by a built-in plugin:
 
 ```bash
 python scripts/validate_registry.py                # rules
