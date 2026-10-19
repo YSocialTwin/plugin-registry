@@ -29,18 +29,22 @@ CATEGORIES = {"agent_extensions", "frontend_extensions", "backend_extensions"}
 TRUST = {"official", "community"}
 # keys and directories used by the plugins that ship inside YSocial
 BUILTIN_IDS = {
-    "microblogging_client",
-    "microblogging_server",
-    "forum_client",
-    "forum_server",
-    "photo_sharing",
-    "hpc",
-    "y_memory_subsystem",
-    "reactive_agents",
-    "frontend_adds_on",
-    "scenario_design",
-    "training_modules",
-}
+    "agent_memory", "agent_plugins", "forum_client", "forum_server",
+    "frontend_adds_on", "hpc_simulator", "microblogging_client",
+    "microblogging_server", "photo_sharing", "reactive_agents",
+    "scenario_design", "training_modules",
+}  # fmt: skip
+BUILTIN_DIRS = {
+    d.lower() for d in (
+        "ScenarioDesign", "TrainingModules", "YClient", "YClientReddit",
+        "YPhotoSharing", "YServer", "YServerReddit", "YSimulator",
+        "frontend_adds-on", "reactive_agents", "y_agents_plugins",
+        "y_memory_subsystem",
+    )
+}  # fmt: skip
+BUILTIN_REPOS = {
+    f"ysocialtwin/{d}" for d in BUILTIN_DIRS
+}  # same names as the directories
 KNOWN_FIELDS = {
     "id", "name", "description", "category", "repo", "branch", "directory",
     "recipe", "trust", "min_ysocial_version", "authors", "import_name", "private",
@@ -68,8 +72,8 @@ def validate(payload) -> list[str]:
         errors.append("at most 500 plugins")
 
     ids: set[str] = set()
-    repos: set[str] = set()
-    dirs: set[str] = set()
+    repos: set[str] = set(BUILTIN_REPOS)
+    dirs: set[str] = set(BUILTIN_DIRS)
     for i, entry in enumerate(plugins):
         where = f"plugins[{i}]"
         if not isinstance(entry, dict):
@@ -98,13 +102,13 @@ def validate(payload) -> list[str]:
             errors.append(f"{where}: repo must look like 'owner/name'")
         else:
             if repo.lower() in repos:
-                errors.append(f"{where}: repository listed twice")
+                errors.append(f"{where}: repository already listed or built in")
             repos.add(repo.lower())
             directory = entry.get("directory") or repo.split("/", 1)[1]
             if not isinstance(directory, str) or not DIR_RE.match(directory):
                 errors.append(f"{where}: invalid directory")
             elif directory in {".", ".."} or directory.lower() in dirs:
-                errors.append(f"{where}: directory already in use")
+                errors.append(f"{where}: directory already in use (or built in)")
             else:
                 dirs.add(directory.lower())
             if entry.get("trust") == "official" and (

@@ -32,7 +32,9 @@ def test_example_is_valid():
     "over",
     [
         {"id": "Bad Id"},
-        {"id": "hpc"},
+        {"id": "hpc_simulator"},
+        {"directory": "YServer"},
+        {"repo": "YSocialTwin/YClient"},
         {"repo": "https://evil.example/a/b"},
         {"recipe": "curl | sh"},
         {"category": "other"},
