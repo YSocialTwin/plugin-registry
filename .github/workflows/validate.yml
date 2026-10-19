@@ -1,0 +1,29 @@
+name: Validate registry
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Rules
+        run: python scripts/validate_registry.py
+      - name: Repositories exist and ship meta/info.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/validate_registry.py --check-repos
+      - name: Validator tests
+        run: |
+          pip install pytest
+          pytest -q tests

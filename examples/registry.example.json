@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "plugins": [
+    {
+      "id": "sentiment_lab",
+      "name": "Sentiment Lab",
+      "description": "Sentiment analysis tools for simulated conversations.",
+      "category": "backend_extensions",
+      "repo": "your-user/sentiment-lab",
+      "branch": "main",
+      "recipe": "pip-editable",
+      "trust": "community",
+      "min_ysocial_version": "4.0.0",
+      "authors": ["Your Name"],
+      "import_name": "sentiment_lab",
+      "private": false
+    }
+  ]
+}

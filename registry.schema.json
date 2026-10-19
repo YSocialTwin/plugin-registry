@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "YSocial plugin registry",
+  "type": "object",
+  "required": ["schema_version", "plugins"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "plugins": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "category", "repo"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]{2,47}$" },
+          "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "description": { "type": "string", "maxLength": 400 },
+          "category": {
+            "enum": ["agent_extensions", "frontend_extensions", "backend_extensions"]
+          },
+          "repo": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})/[A-Za-z0-9._-]{1,100}$"
+          },
+          "branch": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,99}$" },
+          "directory": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$" },
+          "recipe": { "enum": ["auto", "requirements", "pip-editable"] },
+          "trust": { "enum": ["official", "community"] },
+          "min_ysocial_version": { "type": "string", "pattern": "^\\d+(\\.\\d+){0,3}$" },
+          "authors": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 80 } },
+          "import_name": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)*$"
+          },
+          "private": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}
