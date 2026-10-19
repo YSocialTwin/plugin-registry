@@ -4,6 +4,7 @@
     {
       "key": "microblogging_client",
       "label": "YClient",
+      "description": "Runs the agents of a microblogging simulation (client side).",
       "group": "microblogging",
       "group_label": "Microblogging",
       "category": "simulation_runtimes",
@@ -32,6 +33,7 @@
     {
       "key": "microblogging_server",
       "label": "YServer",
+      "description": "Hosts the microblogging platform the agents interact with (server side).",
       "group": "microblogging",
       "group_label": "Microblogging",
       "category": "simulation_runtimes",
@@ -60,6 +62,7 @@
     {
       "key": "forum_client",
       "label": "YClientReddit",
+      "description": "Runs the agents of a forum simulation (client side).",
       "group": "forum",
       "group_label": "Forum",
       "category": "simulation_runtimes",
@@ -88,6 +91,7 @@
     {
       "key": "forum_server",
       "label": "YServerReddit",
+      "description": "Hosts the forum platform the agents interact with (server side).",
       "group": "forum",
       "group_label": "Forum",
       "category": "simulation_runtimes",
@@ -116,6 +120,7 @@
     {
       "key": "hpc_simulator",
       "label": "YSimulator",
+      "description": "Runs large-scale simulations in a distributed way on HPC clusters.",
       "group": "hpc",
       "group_label": "HPC",
       "category": "simulation_runtimes",
@@ -144,6 +149,7 @@
     {
       "key": "photo_sharing",
       "label": "YPhotoSharing",
+      "description": "Simulation runtime for photo-sharing experiments, with an Instagram-like platform.",
       "group": "photo_sharing",
       "group_label": "Photo Sharing",
       "category": "simulation_runtimes",
@@ -173,6 +179,7 @@
     {
       "key": "agent_plugins",
       "label": "y_agents_plugins",
+      "description": "Ready-made special-purpose agents (moderator, propaganda, comic relief, stress testing and more) to add to an experiment.",
       "group": "agent_plugins",
       "group_label": "Agent Plugins",
       "category": "agent_extensions",
@@ -185,6 +192,7 @@
     {
       "key": "agent_memory",
       "label": "Agent Memory",
+      "description": "Gives simulated agents a memory of past interactions: relationship history, thread continuity and conversation cues used when they reply.",
       "group": "agent_plugins",
       "group_label": "Agent Plugins",
       "category": "agent_extensions",
@@ -198,6 +206,7 @@
     {
       "key": "reactive_agents",
       "label": "Reactive Agents",
+      "description": "Lets simulated agents react to human participants even when the simulation is not running: they answer mentions, react to posts of the people they follow and join ongoing threads. Optional extras include per-viewer content hiding, a virtual round clock for ad hoc agents, and check-ins with followed users who go quiet.",
       "group": "frontend_plugins",
       "group_label": "Frontend Plugins",
       "category": "agent_extensions",
@@ -210,6 +219,7 @@
     {
       "key": "frontend_adds_on",
       "label": "Frontend Adds-on",
+      "description": "Optional add-ons for the participant interface, such as annotation tools and educational overlays, enabled per experiment.",
       "group": "frontend_plugins",
       "group_label": "Frontend Plugins",
       "category": "frontend_extensions",
@@ -222,6 +232,7 @@
     {
       "key": "scenario_design",
       "label": "Scenario Design",
+      "description": "Design multi-round interaction scenarios — threads, posts and their timing — before running an experiment.",
       "group": "backend_settings",
       "group_label": "Backend Settings",
       "category": "backend_extensions",
@@ -234,6 +245,7 @@
     {
       "key": "training_modules",
       "label": "Training Modules",
+      "description": "Build training courses from ordered steps — YSocial scenarios, questionnaires or external pages — assign them to students and export their activity.",
       "group": "backend_settings",
       "group_label": "Backend Settings",
       "category": "backend_extensions",

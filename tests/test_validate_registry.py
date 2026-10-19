@@ -44,6 +44,9 @@ def test_published_builtin_is_valid():
         lambda e: e.update(repo="https://evil/x"),
         lambda e: e.update(directory=".."),
         lambda e: e.pop("label"),
+        lambda e: e.pop("description"),
+        lambda e: e.update(description="too short"),
+        lambda e: e.update(description="x" * 401),
         lambda e: e.update(validate_import="a b"),
     ],
 )

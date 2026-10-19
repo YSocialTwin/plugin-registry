@@ -29,13 +29,13 @@ CATEGORIES = {"agent_extensions", "frontend_extensions", "backend_extensions"}
 TRUST = {"official", "community"}
 BUILTIN_FILE = Path(__file__).resolve().parents[1] / "builtin.json"
 BUILTIN_FIELDS = {
-    "key", "label", "group", "group_label", "category", "category_label",
+    "key", "label", "description", "group", "group_label", "category", "category_label",
     "directory", "repo", "branch", "install_commands", "validate_entrypoints",
     "validate_import", "private", "visible_to_usernames", "seed",
 }  # fmt: skip
 BUILTIN_REQUIRED = (
     "key", "label", "group", "group_label", "category", "category_label",
-    "directory", "repo",
+    "description", "directory", "repo",
 )  # fmt: skip
 PIP_PREFIX = ["python", "-m", "pip", "install"]
 KNOWN_FIELDS = {
@@ -79,6 +79,9 @@ def validate_builtin(payload) -> list[str]:
                 errors.append(f"{where}: {field} is required")
         if not ID_RE.match(str(entry.get("key", ""))):
             errors.append(f"{where}: invalid key")
+        description = str(entry.get("description") or "").strip()
+        if description and not 20 <= len(description) <= 400:
+            errors.append(f"{where}: description must be 20-400 characters")
         if not REPO_RE.match(str(entry.get("repo", ""))):
             errors.append(f"{where}: repo must look like 'owner/name'")
         directory = str(entry.get("directory", ""))

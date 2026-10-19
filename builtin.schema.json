@@ -10,11 +10,12 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["key", "label", "group", "group_label", "category", "category_label", "directory", "repo"],
+        "required": ["key", "label", "description", "group", "group_label", "category", "category_label", "directory", "repo"],
         "additionalProperties": false,
         "properties": {
           "key": { "type": "string", "pattern": "^[a-z][a-z0-9_]{2,47}$" },
           "label": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 20, "maxLength": 400 },
           "group": { "type": "string", "minLength": 1 },
           "group_label": { "type": "string", "minLength": 1 },
           "category": { "type": "string", "minLength": 1 },
