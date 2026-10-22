@@ -1,6 +1,25 @@
 # YSocial plugin registry
 
-The public list of plugins that the YSocial plugin page can install. YSocial reads
+<p align="center">
+  <img src="docs/banner.png" alt="plugin-registry: where plugins are listed, the catalog of YSocial plugins">
+</p>
+
+> The public catalog of plugins that the YSocial plugin page can install.
+
+<p align="center">
+  <a href="https://github.com/YSocialTwin/YSocial"><b>YSocial</b></a> &nbsp;·&nbsp;
+  <a href="https://y-not.social/plugins">Plugins</a> &nbsp;·&nbsp;
+  <a href="CONTRIBUTING.md">Add your plugin</a> &nbsp;·&nbsp;
+  <a href="#format">Format</a> &nbsp;·&nbsp;
+  <a href="https://y-not.social/">Website</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/YSocialTwin/plugin-registry/actions/workflows/validate.yml"><img src="https://github.com/YSocialTwin/plugin-registry/actions/workflows/validate.yml/badge.svg" alt="Validate registry"></a>
+  <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3"></a>
+</p>
+
+YSocial reads
 [`registry.json`](registry.json) when it starts (and keeps a copy for offline use), so a
 plugin listed here becomes available in an **already installed** YSocial, with no new
 YSocial or installer release.
