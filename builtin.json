@@ -177,6 +177,36 @@
       "seed": true
     },
     {
+      "key": "instant_messaging",
+      "label": "YInstantMessaging",
+      "description": "Simulation runtime for instant-messaging experiments, with Telegram-like chats, groups, channels and forum topics.",
+      "group": "instant_messaging",
+      "group_label": "Instant Messaging",
+      "category": "simulation_runtimes",
+      "category_label": "Simulation Runtime Stack",
+      "directory": "YInstantMessaging",
+      "repo": "YSocialTwin/YInstantMessaging",
+      "branch": "main",
+      "install_commands": [
+        [
+          "python",
+          "-m",
+          "pip",
+          "install",
+          "-r",
+          "requirements.txt"
+        ]
+      ],
+      "validate_entrypoints": [
+        "run_server.py",
+        "run_client.py",
+        "requirements.txt"
+      ],
+      "validate_import": "yinstantmessaging",
+      "private": true,
+      "seed": true
+    },
+    {
       "key": "agent_plugins",
       "label": "y_agents_plugins",
       "description": "Ready-made special-purpose agents (moderator, propaganda, comic relief, stress testing and more) to add to an experiment.",

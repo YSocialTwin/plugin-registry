@@ -30,7 +30,7 @@ def _builtin():
 
 def test_published_builtin_is_valid():
     assert v.validate_builtin(_builtin()) == []
-    assert len(_builtin()["plugins"]) == 12
+    assert len(_builtin()["plugins"]) == 13
 
 
 @pytest.mark.parametrize(
