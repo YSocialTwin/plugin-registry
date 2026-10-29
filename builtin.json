@@ -207,6 +207,36 @@
       "seed": true
     },
     {
+      "key": "dating",
+      "label": "YDating",
+      "description": "Simulation runtime for Tinder-like dating experiments: profiles, swipes, mutual matches, private conversations and interchangeable matching recommenders.",
+      "group": "dating",
+      "group_label": "Dating",
+      "category": "simulation_runtimes",
+      "category_label": "Simulation Runtime Stack",
+      "directory": "YDating",
+      "repo": "YSocialTwin/YDating",
+      "branch": "main",
+      "install_commands": [
+        [
+          "python",
+          "-m",
+          "pip",
+          "install",
+          "-r",
+          "requirements.txt"
+        ]
+      ],
+      "validate_entrypoints": [
+        "run_server.py",
+        "run_client.py",
+        "requirements.txt"
+      ],
+      "validate_import": "YDating",
+      "private": true,
+      "seed": true
+    },
+    {
       "key": "agent_plugins",
       "label": "y_agents_plugins",
       "description": "Ready-made special-purpose agents (moderator, propaganda, comic relief, stress testing and more) to add to an experiment.",
