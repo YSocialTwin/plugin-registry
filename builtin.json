@@ -237,6 +237,36 @@
       "seed": true
     },
     {
+      "key": "forum_hpc",
+      "label": "YForum",
+      "description": "Ray runtime for Reddit-style forum experiments: threads, comments, votes, follows and interchangeable content recommenders on HPC clusters.",
+      "group": "hpc",
+      "group_label": "HPC",
+      "category": "simulation_runtimes",
+      "category_label": "Simulation Runtime Stack",
+      "directory": "YForum",
+      "repo": "YSocialTwin/YForum",
+      "branch": "main",
+      "install_commands": [
+        [
+          "python",
+          "-m",
+          "pip",
+          "install",
+          "-r",
+          "requirements.txt"
+        ]
+      ],
+      "validate_entrypoints": [
+        "run_server.py",
+        "run_client.py",
+        "requirements.txt"
+      ],
+      "validate_import": "YForum",
+      "private": true,
+      "seed": true
+    },
+    {
       "key": "agent_plugins",
       "label": "y_agents_plugins",
       "description": "Ready-made special-purpose agents (moderator, propaganda, comic relief, stress testing and more) to add to an experiment.",
