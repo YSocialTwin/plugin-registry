@@ -1,21 +1,4 @@
 {
   "schema_version": 1,
-  "plugins": [
-    {
-      "id": "ysocial_federation",
-      "name": "YFederation",
-      "description": "SDK and coordinator of the World Simulation: synchronises several platform experiments on one clock and moves agents, attention and cross-posts between them.",
-      "category": "backend_extensions",
-      "repo": "YSocialTwin/YFederation",
-      "branch": "main",
-      "recipe": "pip-editable",
-      "trust": "official",
-      "min_ysocial_version": "4.0.0",
-      "authors": [
-        "YSocialTwin"
-      ],
-      "import_name": "ysocial_federation",
-      "private": false
-    }
-  ]
+  "plugins": []
 }
